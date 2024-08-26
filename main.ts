@@ -16,6 +16,7 @@ type EntryParsed = Record<
 	string
 >
 
+const trashBinGroupName = "Trash"
 const optRegex = /^otpauth:\/\/./
 
 const bcup = parse(await Bun.file(values.input).text())
@@ -29,11 +30,25 @@ const linesObj = content.map(p =>
 	}), {})
 )
 
-const groupIndex: Record<string, string> =
-	linesObj.filter(lo => lo.type === "group")
+const groupLineObjects = linesObj.filter(lo => lo.type === "group");
+
+const groupNameIndex: Record<string, string> =
+	groupLineObjects
 		.reduce((acc, cur) => ({
 			[cur.group_id]: cur.group_name, ...acc
 		}), {})
+
+const groupParrentIndex: Record<string, string | null > = 
+	groupLineObjects
+		.reduce((acc,cur)=>({
+			[cur.group_id]: cur.group_parent || null , ...acc
+		}),{}) 
+
+const isGroupInTrash = (groupId: string) => {
+	if(groupNameIndex[groupId] === trashBinGroupName && groupParrentIndex[groupId] === null) return true
+	if(groupParrentIndex[groupId]) return isGroupInTrash(groupParrentIndex[groupId]) 
+	return false
+}
 
 const getExtraFields = (lineObject: Record<string, string>) => {
 	const fieldsToIgnore = ['password', 'username', 'id', 'title', 'group_parent', 'group_name', 'group_id', 'type']
@@ -47,9 +62,13 @@ const getExtraFields = (lineObject: Record<string, string>) => {
 	return fields.filter(f => f.value)
 }
 
-const entries: Array<EntryParsed> =
-	linesObj.filter(lo => lo.type === "entry")
-		.map(lo => ({ ...lo, group_name: groupIndex[lo.group_id] }))
+const entryObjectLines = linesObj.filter(lo => lo.type === "entry")
+const entriesToIgnore = entryObjectLines.filter(lo => isGroupInTrash(lo.group_id))
+const entriesToExport = entryObjectLines.filter(lo => !isGroupInTrash(lo.group_id))
+
+const entriesFormated: Array<EntryParsed> =
+	entriesToExport
+		.map(lo => ({ ...lo, group_name: groupNameIndex[lo.group_id] }))
 		.map(lo => {
 			const fields = getExtraFields(lo);
 
@@ -74,7 +93,7 @@ const entries: Array<EntryParsed> =
 const keepassHeaders = ['Group', 'Title', 'Username', 'Password', 'URL', 'Notes', 'TOTP', 'Icon', 'Last Modified', 'Created']
 const output = stringify([
 	keepassHeaders,
-	...entries.map(e => [
+	...entriesFormated.map(e => [
 		e.group,
 		e.name,
 		e.username,
@@ -89,4 +108,6 @@ const output = stringify([
 ])
 
 Bun.write(values.output, output)
-console.log(`${entries.length} entries exported`)
+console.log(`Found ${entryObjectLines.length} entries`)
+console.log(`${entriesToIgnore.length} ignored`)
+console.log(`${entriesToExport.length} exported`)
