@@ -1,13 +1,16 @@
 import { expect, test, mock, spyOn } from "bun:test";
 import {
 	createGroupIndex,
+	entriesToKeepassxcFileContent,
 	extractExtraFields,
 	extractLineObjects,
+	formatEntries,
 	getArguments,
 	isGroupInTrash,
 	logInformations,
 	readAndParseButtercupCsv,
 	splitEntryObjectLinesByDeletedStatus,
+	structureExtraFields,
 	writeKeepassXcCsvFile,
 } from "./helpers";
 import * as util from "util";
@@ -247,14 +250,85 @@ test.skip("splitEntryObjectLinesByDeletedStatus", () => {
 	expect(false).toBe(true);
 });
 
-test.skip("structureExtraFields", () => {
-	expect(false).toBe(true);
+test("structureExtraFields", () => {
+	const input1 = [
+		{
+			key: "author",
+			value: "Eugène Ionesco",
+		},
+		{
+			key: "book",
+			value: "Rhinocéros",
+		},
+	];
+
+	const input2 = [
+		{
+			key: "ONE TIME PASSWORD",
+			value: "otpauth://TOPT _DATA",
+		},
+	];
+
+	const rtn1 = structureExtraFields(input1);
+	const rtn2 = structureExtraFields(input2);
+	const rtn3 = structureExtraFields([...input1, ...input2]);
+
+	console.log(rtn3);
+
+	expect(rtn1).toStrictEqual({
+		totp: null,
+		notes: "author : Eugène Ionesco\nbook : Rhinocéros",
+	});
+
+	expect(rtn2).toStrictEqual({
+		totp: "otpauth://TOPT _DATA",
+		notes: null,
+	});
+
+	expect(rtn3).toStrictEqual({
+		totp: "otpauth://TOPT _DATA",
+		notes: "author : Eugène Ionesco\nbook : Rhinocéros",
+	});
 });
 test.skip("formatEntries", () => {
 	expect(false).toBe(true);
 });
-test.skip("entriesToKeepassxcFileContent", () => {
-	expect(false).toBe(true);
+
+test("entriesToKeepassxcFileContent", () => {
+	const input = [
+		{
+			password: null,
+			group: null,
+			notes: null,
+			id: "id-00",
+			username: null,
+			name: null,
+			totp: null,
+		},
+		{
+			password: "some-password",
+			group: "Group 01",
+			notes: "lorem ipsum",
+			id: "id-01",
+			username: "example@domain.com",
+			name: "provider",
+			totp: "TOPT string",
+		},
+	];
+
+	const dateMock = "1970-01-01T00:00:00.000Z";
+
+	const spyDate = spyOn(Date.prototype, "toISOString");
+	spyDate.mockImplementation(() => dateMock);
+
+	const rtn = entriesToKeepassxcFileContent(input);
+
+	spyDate.mockClear();
+
+	expect(typeof rtn).toBe("string");
+	expect(rtn).toBe(
+		"Group,Title,Username,Password,URL,Notes,TOTP,Icon,Last Modified,Created\n,,,,,,,0,1970-01-01T00:00:00.000Z,1970-01-01T00:00:00.000Z\nGroup 01,provider,example@domain.com,some-password,,lorem ipsum,TOPT string,0,1970-01-01T00:00:00.000Z,1970-01-01T00:00:00.000Z\n",
+	);
 });
 
 test("writeKeepassXcCsvFile", () => {
@@ -276,8 +350,4 @@ test("logInformations", () => {
 	expect(skyConsole).toHaveBeenCalledWith("Found 10 entries");
 	expect(skyConsole).toHaveBeenCalledWith("4 ignored");
 	expect(skyConsole).toHaveBeenCalledWith("6 exported");
-});
-
-test.skip("main", () => {
-	expect(false).toBe(true);
 });
