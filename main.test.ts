@@ -246,8 +246,77 @@ test("extractExtraFields", () => {
 	]);
 });
 
-test.skip("splitEntryObjectLinesByDeletedStatus", () => {
-	expect(false).toBe(true);
+test("splitEntryObjectLinesByDeletedStatus", () => {
+	const groupIndex = {
+		id1: {
+			id: "id1",
+			name: "group 1 name",
+			parrentGroupId: "trashid",
+		},
+		id2: {
+			id: "id2",
+			name: "group 2 name",
+			parrentGroupId: "id1",
+		},
+		id3: {
+			id: "id3",
+			name: "group 3 name",
+			parrentGroupId: null,
+		},
+		id4: {
+			id: "id4",
+			name: "group 4 name",
+			parrentGroupId: "id3",
+		},
+		trashid: {
+			id: "trashid",
+			name: "Trash",
+			parrentGroupId: null,
+		},
+	};
+
+	const lineObjects: Array<LineObject> = [
+		{
+			type: "entry",
+			group_id: "id3",
+			group_name: null,
+			group_parent: null,
+			title: null,
+			notes: "notas ahahah",
+			id: "entry1",
+			password: null,
+			username: null,
+		},
+		{
+			type: "entry",
+			group_id: "id4",
+			group_name: null,
+			group_parent: null,
+			title: null,
+			notes: null,
+			id: "entry2",
+			password: null,
+			username: null,
+		},
+		{
+			type: "entry",
+			group_id: "id2",
+			group_name: null,
+			group_parent: null,
+			title: null,
+			notes: null,
+			id: "entry3",
+			password: null,
+			username: null,
+		},
+	];
+
+	const rtn = splitEntryObjectLinesByDeletedStatus(lineObjects, groupIndex);
+
+	expect(rtn).toStrictEqual({
+		deleted: [lineObjects[2]],
+		active: [lineObjects[0], lineObjects[1]],
+	});
 });
 
 test("structureExtraFields", () => {
@@ -273,8 +342,6 @@ test("structureExtraFields", () => {
 	const rtn2 = structureExtraFields(input2);
 	const rtn3 = structureExtraFields([...input1, ...input2]);
 
-	console.log(rtn3);
-
 	expect(rtn1).toStrictEqual({
 		totp: null,
 		notes: "author : Eugène Ionesco\nbook : Rhinocéros",
@@ -290,8 +357,106 @@ test("structureExtraFields", () => {
 		notes: "author : Eugène Ionesco\nbook : Rhinocéros",
 	});
 });
-test.skip("formatEntries", () => {
-	expect(false).toBe(true);
+
+test("formatEntries", () => {
+	const groupIndex = {
+		id1: {
+			id: "id1",
+			name: "group 1 name",
+			parrentGroupId: "trashid",
+		},
+		id2: {
+			id: "id2",
+			name: "group 2 name",
+			parrentGroupId: "id1",
+		},
+		id3: {
+			id: "id3",
+			name: "group 3 name",
+			parrentGroupId: null,
+		},
+		id4: {
+			id: "id4",
+			name: "group 4 name",
+			parrentGroupId: "id3",
+		},
+		trashid: {
+			id: "trashid",
+			name: "Trash",
+			parrentGroupId: null,
+		},
+	};
+
+	const lineObjects: Array<LineObject> = [
+		{
+			type: "entry",
+			group_id: "id3",
+			group_name: null,
+			group_parent: null,
+			title: null,
+			notes: null,
+			id: "entry1",
+			password: null,
+			username: null,
+			"random field name": "random field value",
+		},
+		{
+			type: "entry",
+			group_id: "id4",
+			group_name: null,
+			group_parent: null,
+			title: null,
+			notes: "lorem ipsum",
+			id: "entry2",
+			password: null,
+			username: null,
+			"prime numbers": "2, 3, 5, 7, 11, 13,",
+			"ONE TIME PWD": "otpauth://TOPT _DATA_1",
+		},
+		{
+			type: "entry",
+			group_id: "id2",
+			group_name: null,
+			group_parent: null,
+			title: null,
+			notes: null,
+			id: "entry3",
+			password: null,
+			username: null,
+		},
+	];
+
+	const rtn = formatEntries(lineObjects, groupIndex);
+
+	expect(rtn).toStrictEqual([
+		{
+			id: "entry1",
+			name: null,
+			password: null,
+			username: null,
+			group: "group 3 name",
+			notes: "random field name : random field value",
+			totp: null,
+		},
+		{
+			id: "entry2",
+			name: null,
+			password: null,
+			username: null,
+			group: "group 4 name",
+			notes: "notes : lorem ipsum\nprime numbers : 2, 3, 5, 7, 11, 13,",
+			totp: "otpauth://TOPT _DATA_1",
+		},
+		{
+			id: "entry3",
+			name: null,
+			password: null,
+			username: null,
+			group: "group 2 name",
+			notes: null,
+			totp: null,
+		},
+	]);
 });
 
 test("entriesToKeepassxcFileContent", () => {
