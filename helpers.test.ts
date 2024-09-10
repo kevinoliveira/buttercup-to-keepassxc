@@ -94,7 +94,7 @@ test("createGroupIndex", () => {
 			type: "group",
 			group_id: "id1",
 			group_name: "group 1 name",
-			group_parent: null,
+			group_parent: "0",
 			title: null,
 			notes: null,
 			id: null,
@@ -116,7 +116,7 @@ test("createGroupIndex", () => {
 			type: "entry",
 			group_id: "id2",
 			group_name: null,
-			group_parent: null,
+			group_parent: "0",
 			title: null,
 			notes: null,
 			id: "id3",
@@ -499,11 +499,11 @@ test("entriesToKeepassxcFileContent", () => {
 test("writeKeepassXcCsvFile", () => {
 	const spyWrite = spyOn(global.Bun, "write");
 
-	spyWrite.mockImplementationOnce(()=>Promise.resolve(1))
+	spyWrite.mockImplementationOnce(() => Promise.resolve(1));
 	writeKeepassXcCsvFile("filepath", "file content");
 
 	expect(spyWrite).toHaveBeenCalledTimes(1);
-	expect(spyWrite).toHaveBeenCalledWith("file content", "filepath");
+	expect(spyWrite).toHaveBeenCalledWith("filepath", "file content");
 });
 
 test("logInformations", () => {

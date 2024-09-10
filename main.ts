@@ -18,7 +18,7 @@ async function main() {
 	const entries = splitEntryObjectLinesByDeletedStatus(lineObjs, gIdx);
 	const formatedEntries = formatEntries(entries.active, gIdx);
 	const kpassContent = entriesToKeepassxcFileContent(formatedEntries);
-	writeKeepassXcCsvFile(paths.output, kpassContent);
+	await writeKeepassXcCsvFile(paths.output, kpassContent);
 	logInformations(entries.deleted.length, entries.active.length);
 }
 

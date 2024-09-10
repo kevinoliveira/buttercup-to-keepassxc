@@ -60,7 +60,7 @@ export const createGroupIndex = (lineObjects: LineObject[]): GroupIndex => {
 		(acc, cur) => ({
 			[cur.group_id!]: {
 				id: cur.group_id!,
-				parrentGroupId: cur.group_parent,
+				parrentGroupId: cur.group_parent === "0" ? null : cur.group_parent,
 				name: cur.group_name!,
 			},
 			...acc,
@@ -204,7 +204,7 @@ export const entriesToKeepassxcFileContent = (
 };
 
 export const writeKeepassXcCsvFile = async (path: string, content: string) => {
-	Bun.write(content, path);
+	await Bun.write(path, content);
 };
 
 export const logInformations = (
