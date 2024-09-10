@@ -499,6 +499,7 @@ test("entriesToKeepassxcFileContent", () => {
 test("writeKeepassXcCsvFile", () => {
 	const spyWrite = spyOn(global.Bun, "write");
 
+	spyWrite.mockImplementationOnce(()=>Promise.resolve(1))
 	writeKeepassXcCsvFile("filepath", "file content");
 
 	expect(spyWrite).toHaveBeenCalledTimes(1);
