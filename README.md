@@ -25,3 +25,4 @@ Export passwords, notes and TOTPs from Buttercup to keepassxc
     ```
 1. CSV fields are proprely escaped and passwords with commas and double quotes will be properly exported
 1. Buttercup does not export dates, therefore 'Created' and 'Last Modified' will be registed as the moment of export
+1. Test/Example files are avaliable on ./examples, the password for both buttercup and keepassxc vauts is `banana` 

@@ -1,0 +1,17 @@
+Group,Title,Username,Password,URL,Notes,TOTP,Icon,Last Modified,Created
+General,www.example.com,random-username-12,random-password,,,,0,2024-09-10T01:18:50.033Z,2024-09-10T01:18:50.033Z
+subgroup,anoter service,not-really-a-user-name,longlonglonglonglonglonglonglonglongpassword,,,,0,2024-09-10T01:18:50.033Z,2024-09-10T01:18:50.033Z
+subgroup,my secret mastercard,Maik Knotten,5240885772506575,,"expiry : 102026
+valid_from : 102016
+cvv : 497",,0,2024-09-10T01:18:50.033Z,2024-09-10T01:18:50.033Z
+subgroup,Example webpage,username123,password123,,url : www.example.com,,0,2024-09-10T01:18:50.033Z,2024-09-10T01:18:50.033Z
+subgroup,THIS is a secret NOTE,,,,"note : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a scelerisque purus. Nulla sed nunc non nisl iaculis tempor. Cras in velit mollis sapien elementum sagittis sit amet vel purus. Vestibulum suscipit turpis nec justo sodales lacinia. Duis quis imperdiet ante, vel pellentesque dui. Vivamus non viverra purus, sed tempor nisl. Praesent quis sodales augue. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nullam elementum neque at nisi dignissim, eu cursus nibh gravida. Fusce rutrum neque eget nisl aliquet fermentum. Nunc vel nulla ullamcorper, convallis lorem quis, auctor nisi. Nunc vestibulum at nulla et posuere. Nullam ac accumsan nisi. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce efficitur risus eget sagittis fermentum. Phasellus cursus, eros sit amet eleifend malesuada, quam sapien suscipit ligula, a interdum risus eros id eros.",,0,2024-09-10T01:18:50.033Z,2024-09-10T01:18:50.033Z
+subgroup,random public key,,,,"privateKey : this key is a key
+publicKey : -----BEGIN PUBLIC KEY----- MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCi9/rSUbbr9TT7UnnlAe7dYku0 WV74foYEPJKJBN9N2ujkf6sr6+u2+RooZv39r+q30BiDP7TRMeUh3BKkpA0iIHWm tinPJPk3j60IRELzEFoIbIbGxVHCM5cHR5U+YjpqveuK9XciRIAOMcIFYuHUQegs YSstv0SQdqmJKN87hQIDAQAB -----END PUBLIC KEY-----",,0,2024-09-10T01:18:50.033Z,2024-09-10T01:18:50.033Z
+subgroup,Entry with TOTP,username987,password987,,,otpauth://totp/Issuer  (Somrthing):mark@example.com?secret=JBSWY3DPEHPK3PXP&issuer=RandomIssuer,0,2024-09-10T01:18:50.033Z,2024-09-10T01:18:50.033Z
+subgroup,some title,useruser,passwordpassword,,another one : second password field,,0,2024-09-10T01:18:50.033Z,2024-09-10T01:18:50.033Z
+subgroup,entry with all the fields,user123,pass321,,"city 5 : Navoiy
+city 4 : Isangel
+city 3 : Salto
+city 2 : Mkokotoni
+city 1 : Kaufman",,0,2024-09-10T01:18:50.033Z,2024-09-10T01:18:50.033Z
