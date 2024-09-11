@@ -1,4 +1,4 @@
-import { expect, test, mock, spyOn } from "bun:test";
+import { expect, test, mock, spyOn, afterEach } from "bun:test";
 import {
 	createGroupIndex,
 	entriesToKeepassxcFileContent,
@@ -8,6 +8,7 @@ import {
 	getArguments,
 	isGroupInTrash,
 	logInformations,
+	main,
 	readAndParseButtercupCsv,
 	splitEntryObjectLinesByDeletedStatus,
 	structureExtraFields,
@@ -16,6 +17,10 @@ import {
 import * as util from "util";
 import * as csvParseSync from "csv-parse/sync";
 import { LineObject } from "./types";
+
+afterEach(() => {
+	mock.restore();
+});
 
 test("getArguments", () => {
 	const spyParseArgs = spyOn(util, "parseArgs");
@@ -496,11 +501,11 @@ test("entriesToKeepassxcFileContent", () => {
 	);
 });
 
-test("writeKeepassXcCsvFile", () => {
+test("writeKeepassXcCsvFile", async () => {
 	const spyWrite = spyOn(global.Bun, "write");
 
 	spyWrite.mockImplementationOnce(() => Promise.resolve(1));
-	writeKeepassXcCsvFile("filepath", "file content");
+	await writeKeepassXcCsvFile("filepath", "file content");
 
 	expect(spyWrite).toHaveBeenCalledTimes(1);
 	expect(spyWrite).toHaveBeenCalledWith("filepath", "file content");
@@ -516,4 +521,47 @@ test("logInformations", () => {
 	expect(skyConsole).toHaveBeenCalledWith("Found 10 entries");
 	expect(skyConsole).toHaveBeenCalledWith("4 ignored");
 	expect(skyConsole).toHaveBeenCalledWith("6 exported");
+});
+
+test("main", async () => {
+	const input = `!type,!group_id,!group_name,!group_parent,title,username,password,id,type,cvv,valid_from,expiry,url,note,publicKey,privateKey,one time password,another one,city 1,city 2,city 3,city 4,city 5\ngroup,abd68c99-484c-4c84-a39c-3fd35bff0c55,General,0,,,,,,,,,,,,,,,,,,,\ngroup,04e78395-809e-4aea-bca0-96f55fc0ede0,subgroup,abd68c99-484c-4c84-a39c-3fd35bff0c55,,,,,,,,,,,,,,,,,,,\ngroup,8406a69e-227a-46ca-b4d0-c9a3bff44084,Trash,0,,,,,,,,,,,,,,,,,,,\nentry,abd68c99-484c-4c84-a39c-3fd35bff0c55,,,www.example.com,random-username-12,random-password,437344d6-c67a-43f9-b339-f7520ba9cf61,,,,,,,,,,,,,,,\nentry,04e78395-809e-4aea-bca0-96f55fc0ede0,,,anoter service,not-really-a-user-name,longlonglonglonglonglonglonglonglongpassword,3ebadcaa-2c46-4f95-a66a-a992a55fa1fa,,,,,,,,,,,,,,,\nentry,04e78395-809e-4aea-bca0-96f55fc0ede0,,,my secret mastercard,Maik Knotten,5240885772506575,f943aca2-6aa7-49dd-ae91-238564f113d1,mastercard,497,102016,102026,,,,,,,,,,,\nentry,04e78395-809e-4aea-bca0-96f55fc0ede0,,,Example webpage,username123,password123,9ef2f2c6-56c5-4141-bc48-1e0ff8098df1,,,,,www.example.com,,,,,,,,,,\nentry,04e78395-809e-4aea-bca0-96f55fc0ede0,,,THIS is a secret NOTE,,,65952465-22f6-41f9-8e30-a0a2a1689cf7,,,,,,"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a scelerisque purus. Nulla sed nunc non nisl iaculis tempor. Cras in velit mollis sapien elementum sagittis sit amet vel purus. Vestibulum suscipit turpis nec justo sodales lacinia. Duis quis imperdiet ante, vel pellentesque dui. Vivamus non viverra purus, sed tempor nisl. Praesent quis sodales augue. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nullam elementum neque at nisi dignissim, eu cursus nibh gravida. Fusce rutrum neque eget nisl aliquet fermentum. Nunc vel nulla ullamcorper, convallis lorem quis, auctor nisi. Nunc vestibulum at nulla et posuere. Nullam ac accumsan nisi. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce efficitur risus eget sagittis fermentum. Phasellus cursus, eros sit amet eleifend malesuada, quam sapien suscipit ligula, a interdum risus eros id eros.",,,,,,,,,\nentry,04e78395-809e-4aea-bca0-96f55fc0ede0,,,random public key,,,d35d9f57-52d2-438e-8141-fec90d4c02ef,,,,,,,-----BEGIN PUBLIC KEY----- MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCi9/rSUbbr9TT7UnnlAe7dYku0 WV74foYEPJKJBN9N2ujkf6sr6+u2+RooZv39r+q30BiDP7TRMeUh3BKkpA0iIHWm tinPJPk3j60IRELzEFoIbIbGxVHCM5cHR5U+YjpqveuK9XciRIAOMcIFYuHUQegs YSstv0SQdqmJKN87hQIDAQAB -----END PUBLIC KEY-----,this key is a key,,,,,,,\nentry,04e78395-809e-4aea-bca0-96f55fc0ede0,,,Entry with TOTP,username987,password987,a32f7ba6-7f6b-44a5-8567-2bf2d3f8bb4f,,,,,,,,,otpauth://totp/Issuer  (Somrthing):mark@example.com?secret=JBSWY3DPEHPK3PXP&issuer=RandomIssuer,,,,,,\nentry,04e78395-809e-4aea-bca0-96f55fc0ede0,,,some title,useruser,passwordpassword,9f79e2a0-7973-4a42-9bb4-e3c67d738398,,,,,,,,,,second password field,,,,,\nentry,04e78395-809e-4aea-bca0-96f55fc0ede0,,,entry with all the fields,user123,pass321,a802a129-69b5-4894-aa7d-a9aa3c524d00,,,,,,,,,,,Kaufman,Mkokotoni,Salto,Isangel,Navoiy\nentry,8406a69e-227a-46ca-b4d0-c9a3bff44084,,,deleted entry,useruser,password,045e594a-7e93-4dae-8054-73388f39f918,,,,,,,,,,,,,,,`;
+	const output = `Group,Title,Username,Password,URL,Notes,TOTP,Icon,Last Modified,Created\nGeneral,www.example.com,random-username-12,random-password,,,,0,1970-01-01T00:00:00.000Z,1970-01-01T00:00:00.000Z\nsubgroup,anoter service,not-really-a-user-name,longlonglonglonglonglonglonglonglongpassword,,,,0,1970-01-01T00:00:00.000Z,1970-01-01T00:00:00.000Z\nsubgroup,my secret mastercard,Maik Knotten,5240885772506575,,\"expiry : 102026\nvalid_from : 102016\ncvv : 497\",,0,1970-01-01T00:00:00.000Z,1970-01-01T00:00:00.000Z\nsubgroup,Example webpage,username123,password123,,url : www.example.com,,0,1970-01-01T00:00:00.000Z,1970-01-01T00:00:00.000Z\nsubgroup,THIS is a secret NOTE,,,,\"note : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a scelerisque purus. Nulla sed nunc non nisl iaculis tempor. Cras in velit mollis sapien elementum sagittis sit amet vel purus. Vestibulum suscipit turpis nec justo sodales lacinia. Duis quis imperdiet ante, vel pellentesque dui. Vivamus non viverra purus, sed tempor nisl. Praesent quis sodales augue. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nullam elementum neque at nisi dignissim, eu cursus nibh gravida. Fusce rutrum neque eget nisl aliquet fermentum. Nunc vel nulla ullamcorper, convallis lorem quis, auctor nisi. Nunc vestibulum at nulla et posuere. Nullam ac accumsan nisi. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce efficitur risus eget sagittis fermentum. Phasellus cursus, eros sit amet eleifend malesuada, quam sapien suscipit ligula, a interdum risus eros id eros.\",,0,1970-01-01T00:00:00.000Z,1970-01-01T00:00:00.000Z\nsubgroup,random public key,,,,\"privateKey : this key is a key\npublicKey : -----BEGIN PUBLIC KEY----- MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCi9/rSUbbr9TT7UnnlAe7dYku0 WV74foYEPJKJBN9N2ujkf6sr6+u2+RooZv39r+q30BiDP7TRMeUh3BKkpA0iIHWm tinPJPk3j60IRELzEFoIbIbGxVHCM5cHR5U+YjpqveuK9XciRIAOMcIFYuHUQegs YSstv0SQdqmJKN87hQIDAQAB -----END PUBLIC KEY-----\",,0,1970-01-01T00:00:00.000Z,1970-01-01T00:00:00.000Z\nsubgroup,Entry with TOTP,username987,password987,,,otpauth://totp/Issuer  (Somrthing):mark@example.com?secret=JBSWY3DPEHPK3PXP&issuer=RandomIssuer,0,1970-01-01T00:00:00.000Z,1970-01-01T00:00:00.000Z\nsubgroup,some title,useruser,passwordpassword,,another one : second password field,,0,1970-01-01T00:00:00.000Z,1970-01-01T00:00:00.000Z\nsubgroup,entry with all the fields,user123,pass321,,\"city 5 : Navoiy\ncity 4 : Isangel\ncity 3 : Salto\ncity 2 : Mkokotoni\ncity 1 : Kaufman\",,0,1970-01-01T00:00:00.000Z,1970-01-01T00:00:00.000Z\n`;
+	const inputFleName = "input-fn";
+	const outputFilename = "output-fn";
+
+	// mocks
+	const spyParseArgs = spyOn(util, "parseArgs");
+	// @ts-ignore
+	spyParseArgs.mockImplementation(() => ({
+		values: { input: inputFleName, output: outputFilename },
+	}));
+
+	const spyBunFile = spyOn(global.Bun, "file");
+	// @ts-ignore
+	spyBunFile.mockImplementationOnce(() => ({
+		text: async () => Promise.resolve(input),
+	}));
+
+	const spyWrite = spyOn(global.Bun, "write");
+	spyWrite.mockImplementationOnce(() => Promise.resolve(0));
+
+	const skyConsole = spyOn(global.console, "log");
+	skyConsole.mockImplementation(() => {});
+
+	const dateMock = "1970-01-01T00:00:00.000Z";
+	const spyDate = spyOn(Date.prototype, "toISOString");
+	spyDate.mockImplementation(() => dateMock);
+
+	await main();
+
+	expect(spyBunFile).toHaveBeenCalledTimes(1);
+	expect(spyBunFile).toHaveBeenCalledWith(inputFleName);
+
+	expect(spyWrite).toHaveBeenCalledTimes(1);
+	expect(spyWrite).toHaveBeenNthCalledWith(1, outputFilename, output);
+
+	expect(skyConsole).toHaveBeenCalledTimes(3);
+	expect(skyConsole).toHaveBeenCalledWith("Found 10 entries");
+	expect(skyConsole).toHaveBeenCalledWith("1 ignored");
+	expect(skyConsole).toHaveBeenCalledWith("9 exported");
 });
