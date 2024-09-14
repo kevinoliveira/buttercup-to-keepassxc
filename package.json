@@ -4,6 +4,7 @@
     "@biomejs/biome": "1.8.3"
   },
   "scripts": {
-    "format": "bunx biome format --write ./*.ts"
+    "format": "bunx biome format --write ./*.ts",
+    "compile": "bun build ./main.ts --compile --outfile bcup2kpass"
   }
 }
