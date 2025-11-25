@@ -1,4 +1,4 @@
-!type,!group_id,!group_name,!group_parent,title,username,password,id,type,cvv,valid_from,expiry,url,note,publicKey,privateKey,one time password,another one,city 1,city 2,city 3,city 4,city 5
+!type,!group_id,!group_name,!group_parent,title,username,password,id,type,cvv,valid_from,expiry,URL,note,publicKey,privateKey,one time password,another one,city 1,city 2,city 3,city 4,city 5
 group,abd68c99-484c-4c84-a39c-3fd35bff0c55,General,0,,,,,,,,,,,,,,,,,,,
 group,04e78395-809e-4aea-bca0-96f55fc0ede0,subgroup,abd68c99-484c-4c84-a39c-3fd35bff0c55,,,,,,,,,,,,,,,,,,,
 group,8406a69e-227a-46ca-b4d0-c9a3bff44084,Trash,0,,,,,,,,,,,,,,,,,,,

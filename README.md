@@ -5,7 +5,10 @@ Export passwords, notes and TOTPs from Buttercup to Keepassxc
 1. Unlock your buttercup vault
 1. Export your vault to CSV (MENU > Current Vault > Export)
 1. Compile the program or download the binary from latest release
-    - compile: `bun build ./main.ts --compile --outfile bcup2kpass`
+    - compile:
+        - `npm install -g bun`
+        - `bun i`
+        - `bun build ./main.ts --compile --outfile bcup2kpass`
     - download: [releases page](https://github.com/kevinoliveira/buttercup-to-keepassxc/releases)
 1. Feed the CSV into the program 
     `./bcup2kpass --input BUTTERCUP_CSV --output KEEPASSXC_CSV`

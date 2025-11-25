@@ -15,12 +15,13 @@ export interface LineObject extends Record<string, string | null> {
 	id: string | null;
 	password: string | null;
 	username: string | null;
+	URL: string | null;
 }
 
 export interface GroupInfo {
 	id: string;
 	name: string;
-	parrentGroupId: string | null;
+	parentGroupId: string | null;
 }
 
 export type GroupIndex = Record<string, GroupInfo>;
@@ -36,7 +37,7 @@ export interface SplitObjectLinesByStatusRtn {
 }
 
 export type EntryParsed = Record<
-	"id" | "name" | "username" | "password" | "totp" | "group" | "notes",
+	"id" | "name" | "username" | "password" | "URL" | "totp" | "group" | "notes",
 	string | null
 >;
 

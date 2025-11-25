@@ -105,6 +105,7 @@ test("createGroupIndex", () => {
 			id: null,
 			password: null,
 			username: null,
+			URL: null,
 		},
 		{
 			type: "group",
@@ -116,6 +117,7 @@ test("createGroupIndex", () => {
 			id: null,
 			password: null,
 			username: null,
+			URL: null,
 		},
 		{
 			type: "entry",
@@ -127,6 +129,7 @@ test("createGroupIndex", () => {
 			id: "id3",
 			password: null,
 			username: null,
+			URL: null,
 		},
 	];
 
@@ -136,12 +139,12 @@ test("createGroupIndex", () => {
 		id1: {
 			id: "id1",
 			name: "group 1 name",
-			parrentGroupId: null,
+			parentGroupId: null,
 		},
 		id2: {
 			id: "id2",
 			name: "group 2 name",
-			parrentGroupId: "id1",
+			parentGroupId: "id1",
 		},
 	});
 });
@@ -151,27 +154,27 @@ test("isGroupInTrash", () => {
 		id1: {
 			id: "id1",
 			name: "group 1 name",
-			parrentGroupId: "trashid",
+			parentGroupId: "trashid",
 		},
 		id2: {
 			id: "id2",
 			name: "group 2 name",
-			parrentGroupId: "id1",
+			parentGroupId: "id1",
 		},
 		id3: {
 			id: "id3",
 			name: "group 3 name",
-			parrentGroupId: null,
+			parentGroupId: null,
 		},
 		id4: {
 			id: "id4",
 			name: "group 4 name",
-			parrentGroupId: "id3",
+			parentGroupId: "id3",
 		},
 		trashid: {
 			id: "trashid",
 			name: "Trash",
-			parrentGroupId: null,
+			parentGroupId: null,
 		},
 	};
 
@@ -185,22 +188,22 @@ test("isGroupInTrash", () => {
 		id1: {
 			id: "id1",
 			name: "group 1 name",
-			parrentGroupId: "id2",
+			parentGroupId: "id2",
 		},
 		id2: {
 			id: "id2",
 			name: "group 2 name",
-			parrentGroupId: "id3",
+			parentGroupId: "id3",
 		},
 		id3: {
 			id: "id3",
 			name: "group 3 name",
-			parrentGroupId: "id4",
+			parentGroupId: "id4",
 		},
 		id4: {
 			id: "id4",
 			name: "group 4 name",
-			parrentGroupId: "id1",
+			parentGroupId: "id1",
 		},
 	};
 
@@ -220,6 +223,7 @@ test("extractExtraFields", () => {
 		id: "id content",
 		password: "password content",
 		username: "username content",
+		URL: "URL content",
 	};
 
 	expect(extractExtraFields(baseLineObject)).toStrictEqual([
@@ -256,27 +260,27 @@ test("splitEntryObjectLinesByDeletedStatus", () => {
 		id1: {
 			id: "id1",
 			name: "group 1 name",
-			parrentGroupId: "trashid",
+			parentGroupId: "trashid",
 		},
 		id2: {
 			id: "id2",
 			name: "group 2 name",
-			parrentGroupId: "id1",
+			parentGroupId: "id1",
 		},
 		id3: {
 			id: "id3",
 			name: "group 3 name",
-			parrentGroupId: null,
+			parentGroupId: null,
 		},
 		id4: {
 			id: "id4",
 			name: "group 4 name",
-			parrentGroupId: "id3",
+			parentGroupId: "id3",
 		},
 		trashid: {
 			id: "trashid",
 			name: "Trash",
-			parrentGroupId: null,
+			parentGroupId: null,
 		},
 	};
 
@@ -291,6 +295,7 @@ test("splitEntryObjectLinesByDeletedStatus", () => {
 			id: "entry1",
 			password: null,
 			username: null,
+			URL: null,
 		},
 		{
 			type: "entry",
@@ -302,6 +307,7 @@ test("splitEntryObjectLinesByDeletedStatus", () => {
 			id: "entry2",
 			password: null,
 			username: null,
+			URL: null,
 		},
 		{
 			type: "entry",
@@ -313,6 +319,7 @@ test("splitEntryObjectLinesByDeletedStatus", () => {
 			id: "entry3",
 			password: null,
 			username: null,
+			URL: null,
 		},
 	];
 
@@ -368,27 +375,27 @@ test("formatEntries", () => {
 		id1: {
 			id: "id1",
 			name: "group 1 name",
-			parrentGroupId: "trashid",
+			parentGroupId: "trashid",
 		},
 		id2: {
 			id: "id2",
 			name: "group 2 name",
-			parrentGroupId: "id1",
+			parentGroupId: "id1",
 		},
 		id3: {
 			id: "id3",
 			name: "group 3 name",
-			parrentGroupId: null,
+			parentGroupId: null,
 		},
 		id4: {
 			id: "id4",
 			name: "group 4 name",
-			parrentGroupId: "id3",
+			parentGroupId: "id3",
 		},
 		trashid: {
 			id: "trashid",
 			name: "Trash",
-			parrentGroupId: null,
+			parentGroupId: null,
 		},
 	};
 
@@ -403,6 +410,7 @@ test("formatEntries", () => {
 			id: "entry1",
 			password: null,
 			username: null,
+			URL: null,
 			"random field name": "random field value",
 		},
 		{
@@ -415,6 +423,7 @@ test("formatEntries", () => {
 			id: "entry2",
 			password: null,
 			username: null,
+			URL: null,
 			"prime numbers": "2, 3, 5, 7, 11, 13,",
 			"ONE TIME PWD": "otpauth://TOPT _DATA_1",
 		},
@@ -428,6 +437,7 @@ test("formatEntries", () => {
 			id: "entry3",
 			password: null,
 			username: null,
+			URL: null,
 		},
 	];
 
@@ -439,6 +449,7 @@ test("formatEntries", () => {
 			name: null,
 			password: null,
 			username: null,
+			url: null,
 			group: "group 3 name",
 			notes: "random field name : random field value",
 			totp: null,
@@ -448,6 +459,7 @@ test("formatEntries", () => {
 			name: null,
 			password: null,
 			username: null,
+			url: null,
 			group: "group 4 name",
 			notes: "notes : lorem ipsum\nprime numbers : 2, 3, 5, 7, 11, 13,",
 			totp: "otpauth://TOPT _DATA_1",
@@ -457,6 +469,7 @@ test("formatEntries", () => {
 			name: null,
 			password: null,
 			username: null,
+			url: null,
 			group: "group 2 name",
 			notes: null,
 			totp: null,
@@ -473,6 +486,7 @@ test("entriesToKeepassxcFileContent", () => {
 			id: "id-00",
 			username: null,
 			name: null,
+			URL: null,
 			totp: null,
 		},
 		{
@@ -482,6 +496,7 @@ test("entriesToKeepassxcFileContent", () => {
 			id: "id-01",
 			username: "example@domain.com",
 			name: "provider",
+			URL: null,
 			totp: "TOPT string",
 		},
 	];

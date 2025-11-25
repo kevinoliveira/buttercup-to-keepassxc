@@ -60,7 +60,7 @@ export const createGroupIndex = (lineObjects: LineObject[]): GroupIndex => {
 		(acc, cur) => ({
 			[cur.group_id!]: {
 				id: cur.group_id!,
-				parrentGroupId: cur.group_parent === "0" ? null : cur.group_parent,
+				parentGroupId: cur.group_parent === "0" ? null : cur.group_parent,
 				name: cur.group_name!,
 			},
 			...acc,
@@ -78,13 +78,13 @@ export const isGroupInTrash = (
 		throw Error("maximum recursion depth reached");
 	if (
 		groupIndex[groupId].name === TRASH_BIN_GROUP_NAME &&
-		groupIndex[groupId].parrentGroupId === null
+		groupIndex[groupId].parentGroupId === null
 	)
 		return true;
-	if (groupIndex[groupId].parrentGroupId)
+	if (groupIndex[groupId].parentGroupId)
 		return isGroupInTrash(
 			groupIndex,
-			groupIndex[groupId].parrentGroupId,
+			groupIndex[groupId].parentGroupId,
 			recursiveCount + 1,
 		);
 	return false;
@@ -101,6 +101,7 @@ export const extractExtraFields = (lineObject: LineObject): ExtraFields[] => {
 		"group_name",
 		"group_id",
 		"type",
+		"URL",
 	];
 	const fields: Array<ExtraFields> = [];
 
@@ -164,6 +165,7 @@ export const formatEntries = (
 			name: lo.title || null,
 			password: lo.password || null,
 			username: lo.username || null,
+			url: lo.URL || null,
 			group: groupName || null,
 			notes: notes || null,
 			totp: totp || null,
@@ -193,7 +195,7 @@ export const entriesToKeepassxcFileContent = (
 			e.name,
 			e.username,
 			e.password,
-			"",
+			e.url,
 			e.notes,
 			e.totp,
 			"0",
